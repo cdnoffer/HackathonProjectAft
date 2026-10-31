@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="Routey is a safety-first route explorer. It scores real-world routes using simulated weather, daylight and road conditions, then explains every recommendation."
+    />
+    <meta name="theme-color" content="#0a0f14" />
+    <script>
+      (function () {
+        try {
+          var mode = localStorage.getItem("routey.theme") || "auto";
+          var dark =
+            mode === "dark" ||
+            (mode === "auto" &&
+              !window.matchMedia("(prefers-color-scheme: light)").matches);
+          var effective = dark ? "dark" : "light";
+          document.documentElement.dataset.theme = effective;
+          document.documentElement.style.colorScheme = effective;
+        } catch (error) {
+          document.documentElement.dataset.theme = "dark";
+        }
+      })();
+    </script>
+    <title>Routey — Safety-first route intelligence</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

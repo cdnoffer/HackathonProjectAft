@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: routey
+    runtime: docker
+    plan: starter
+    healthCheckPath: /api/health
+    envVars:
+      - key: PORT
+        value: 8787
+      - key: ROUTEY_DB
+        value: /data/routey.db
+    disk:
+      name: routey-data
+      mountPath: /data
+      sizeGB: 1

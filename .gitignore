@@ -1,0 +1,17 @@
+node_modules/
+dist/
+data/*.db
+data/*.db-*
+data/*.sqlite
+data/*.sqlite-*
+.env
+.env.local
+*.log
+devtests/screenshots/
+devtests/*.png
+devtests/*.json
+devtests/*.log
+__pycache__/
+.venv/
+.vscode/
+.DS_Store
