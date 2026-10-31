@@ -15,7 +15,7 @@ def attach(page, errors, logs):
 def wait_for_app(page):
     page.goto(BASE, wait_until="domcontentloaded", timeout=60000)
     page.wait_for_selector(".route-card", timeout=120000)
-    page.wait_for_timeout(4500)
+    page.wait_for_timeout(9000)
 
 
 with sync_playwright() as p:

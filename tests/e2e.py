@@ -125,6 +125,9 @@ def main() -> int:
                 == 1
             ), "recommended route is not sorted first"
             assert page.locator(".leaflet-tile-loaded").count() > 0, "no map tiles"
+            assert "Access blocked" not in page.locator("body").inner_text(), (
+                "map provider returned an access-blocked tile page"
+            )
             assert page.locator(".map-canvas").is_visible(), "map is not visible"
             first_city = page.locator(".scenario-place h2").inner_text()
             page.screenshot(path=str(OUT / "e2e-home.png"))

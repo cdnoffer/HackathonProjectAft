@@ -747,8 +747,11 @@ function comparisonReason(
     }
     return `At ${pct}% safety weighting it has the best combined safety and efficiency profile.`;
   }
+  const roundedSafetyGap = Math.round(safetyGap);
   if (route.isFastest) {
-    return `Quickest option, but ${Math.round(safetyGap)} safety points below the recommendation.`;
+    return roundedSafetyGap === 0
+      ? "Quickest option, but effectively tied on safety with the recommended balance."
+      : `Quickest option, but ${roundedSafetyGap} safety points below the recommendation.`;
   }
   if (route.isSafest) {
     const cost = minutes(route.adjustedDurationS - recommended.adjustedDurationS);
@@ -757,9 +760,14 @@ function comparisonReason(
   const timeDifference = Math.round(
     Math.abs(route.adjustedDurationS - recommended.adjustedDurationS) / 60,
   );
+  if (timeDifference === 0) {
+    return roundedSafetyGap === 0
+      ? "Alternative with effectively the same safety and timing."
+      : `Alternative: effectively the same time, but ${roundedSafetyGap} safety points below the recommended balance.`;
+  }
   return route.adjustedDurationS >= recommended.adjustedDurationS
-    ? `Alternative: ${timeDifference} min slower and ${Math.round(safetyGap)} safety points below the recommended balance.`
-    : `Alternative: ${timeDifference} min quicker but ${Math.round(safetyGap)} safety points below the recommended balance.`;
+    ? `Alternative: ${timeDifference} min slower${roundedSafetyGap === 0 ? " with effectively the same safety score" : ` and ${roundedSafetyGap} safety points below the recommended balance`}.`
+    : `Alternative: ${timeDifference} min quicker${roundedSafetyGap === 0 ? " with effectively the same safety score" : ` but ${roundedSafetyGap} safety points below the recommended balance`}.`;
 }
 
 function assignKindsAndReasons(

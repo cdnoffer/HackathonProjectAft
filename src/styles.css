@@ -33,6 +33,7 @@
   --glass-strong: rgba(255, 255, 255, 0.96);
   --scroll: rgba(69, 101, 124, 0.24);
   --route-line-halo: rgba(255, 255, 255, 0.94);
+  --map-base-bg: #ececec;
   --sidebar: 432px;
   --radius-xl: 26px;
   --radius-lg: 19px;
@@ -71,6 +72,7 @@
   --glass-strong: rgba(12, 21, 29, 0.97);
   --scroll: rgba(180, 210, 230, 0.19);
   --route-line-halo: rgba(0, 0, 0, 0.8);
+  --map-base-bg: #2f2f2f;
 }
 
 * {
@@ -138,7 +140,7 @@ button:disabled {
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: var(--bg-deep);
+  background: var(--map-base-bg);
 }
 
 /* ---------- Generic UI ---------- */
@@ -1520,11 +1522,6 @@ button:disabled {
 .leaflet-container {
   font-family: var(--font);
   background: var(--bg-deep);
-}
-
-[data-theme="dark"] .leaflet-tile-pane {
-  filter: invert(1) hue-rotate(185deg) brightness(0.72) contrast(1.12)
-    saturate(0.55);
 }
 
 .leaflet-control-zoom {
