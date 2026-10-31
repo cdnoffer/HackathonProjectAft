@@ -110,14 +110,14 @@ export default function MapView({
     const layers = TILE_LAYERS[theme];
     tileRef.current = L.tileLayer(layers.base, {
       attribution: ATTRIBUTION,
-      maxZoom: 1000,
+      maxZoom: 20,
       zIndex: 0,
       detectRetina: false,
     }).addTo(map);
     tileRef.current.bringToBack();
 
     referenceRef.current = L.tileLayer(layers.reference, {
-      maxZoom: 1000,
+      maxZoom: 20,
       zIndex: 1,
       detectRetina: false,
     }).addTo(map);
@@ -172,7 +172,7 @@ export default function MapView({
         map.fitBounds(L.latLngBounds(points), {
           paddingTopLeft: isNarrow ? [32, 90] : [460, 95],
           paddingBottomRight: isNarrow ? [32, 260] : [80, 95],
-          maxZoom: 1000,
+          maxZoom: 15,
           animate: true,
         });
       }
