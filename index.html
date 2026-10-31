@@ -1,66 +1,33 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- TODO: one sentence describing the project -->
-  <meta name="description" content="">
-  <title>HackathonProjectAft</title>
-
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-
-  <header class="site-header">
-    <a class="brand" href="/">HackathonProjectAft</a>
-    <nav>
-      <a href="#about">About</a>
-      <a href="#features">Features</a>
-      <a href="https://github.com/cdnoffer/HackathonProjectAft">GitHub</a>
-    </nav>
-  </header>
-
-  <main>
-
-    <!-- Hero: headline + one-line pitch + primary action -->
-    <section class="hero">
-      <h1><!-- TODO: headline --></h1>
-      <p><!-- TODO: one or two sentences on what this does --></p>
-      <a class="button" href="#about">Get started</a>
-    </section>
-
-    <!-- About -->
-    <section id="about">
-      <h2>About</h2>
-      <p><!-- TODO: the problem it solves --></p>
-    </section>
-
-    <!-- Features: add or remove cards as needed -->
-    <section id="features">
-      <h2>Features</h2>
-      <ul class="cards">
-        <li class="card">
-          <h3><!-- TODO: feature name --></h3>
-          <p><!-- TODO: one-line detail --></p>
-        </li>
-        <li class="card">
-          <h3><!-- TODO: feature name --></h3>
-          <p><!-- TODO: one-line detail --></p>
-        </li>
-        <li class="card">
-          <h3><!-- TODO: feature name --></h3>
-          <p><!-- TODO: one-line detail --></p>
-        </li>
-      </ul>
-    </section>
-
-  </main>
-
-  <footer class="site-footer">
-    <p><!-- TODO: copyright / credits --></p>
-  </footer>
-
-  <script src="script.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="Routey is a safety-first route explorer. It scores real-world routes using simulated weather, daylight and road conditions, then explains every recommendation."
+    />
+    <meta name="theme-color" content="#0a0f14" />
+    <script>
+      (function () {
+        try {
+          var mode = localStorage.getItem("routey.theme") || "auto";
+          var dark =
+            mode === "dark" ||
+            (mode === "auto" &&
+              !window.matchMedia("(prefers-color-scheme: light)").matches);
+          var effective = dark ? "dark" : "light";
+          document.documentElement.dataset.theme = effective;
+          document.documentElement.style.colorScheme = effective;
+        } catch (error) {
+          document.documentElement.dataset.theme = "dark";
+        }
+      })();
+    </script>
+    <title>Routey — Safety-first route intelligence</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
