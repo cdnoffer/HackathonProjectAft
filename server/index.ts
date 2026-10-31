@@ -119,7 +119,7 @@ app.get("/api/config", (c) =>
     router: "OSM + Valhalla",
     llmConfigured: llmConfigured(),
     llmModel: config.llmModel,
-    tileProvider: "OpenStreetMap",
+    tileProvider: "Esri Light/Dark Gray",
     disclaimer: DISCLAIMER,
   }),
 );

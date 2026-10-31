@@ -119,7 +119,7 @@ export default function SettingsModal({
               </span>
               <div>
                 <strong>Map tiles</strong>
-                <span>OpenStreetMap standard basemap</span>
+                <span>Esri Light/Dark Gray basemap with label overlay</span>
               </div>
               <em>live</em>
             </div>

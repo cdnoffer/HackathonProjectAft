@@ -434,7 +434,7 @@ export default function App() {
       {!driving ? (
         <div className="map-caption">
           <span className="live-dot" />
-          Live OSM map
+          Live map
           <span className="caption-sep">·</span>
           simulated conditions
         </div>

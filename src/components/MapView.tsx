@@ -27,13 +27,21 @@ interface MapViewProps {
   driving: boolean;
 }
 
-const TILE_URLS = {
-  dark: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-  light: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-};
+const TILE_LAYERS = {
+  light: {
+    base: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+    reference:
+      "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}",
+  },
+  dark: {
+    base: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+    reference:
+      "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}",
+  },
+} as const;
 
 const ATTRIBUTION =
-  '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a> contributors · Routing by Valhalla';
+  'Tiles &copy; <a href="https://www.esri.com/" target="_blank" rel="noreferrer">Esri</a> — Esri, HERE, Garmin, &copy; OpenStreetMap contributors · Routing by Valhalla';
 
 function escapeHtml(value: string): string {
   return value
@@ -58,6 +66,7 @@ export default function MapView({
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const tileRef = useRef<L.TileLayer | null>(null);
+  const referenceRef = useRef<L.TileLayer | null>(null);
   const routeLayerRef = useRef<L.LayerGroup | null>(null);
   const markerLayerRef = useRef<L.LayerGroup | null>(null);
   const carMarkerRef = useRef<L.Marker | null>(null);
@@ -96,12 +105,22 @@ export default function MapView({
     const map = mapRef.current;
     if (!map) return;
     if (tileRef.current) map.removeLayer(tileRef.current);
-    tileRef.current = L.tileLayer(TILE_URLS[theme], {
+    if (referenceRef.current) map.removeLayer(referenceRef.current);
+
+    const layers = TILE_LAYERS[theme];
+    tileRef.current = L.tileLayer(layers.base, {
       attribution: ATTRIBUTION,
-      maxZoom: 19,
-      detectRetina: true,
+      maxZoom: 20,
+      zIndex: 0,
+      detectRetina: false,
     }).addTo(map);
     tileRef.current.bringToBack();
+
+    referenceRef.current = L.tileLayer(layers.reference, {
+      maxZoom: 20,
+      zIndex: 1,
+      detectRetina: false,
+    }).addTo(map);
   }, [theme]);
 
   useEffect(() => {
