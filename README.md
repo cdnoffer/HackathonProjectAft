@@ -237,8 +237,76 @@ build.
 
 ## Deployment
 
-The backend must run somewhere; **GitHub Pages alone cannot host it**. A Dockerfile and
-`render.yaml` are included.
+The backend must run somewhere. **Cloudflare Workers/Pages alone cannot run `Bun.serve` or
+`bun:sqlite`**, so a Cloudflare deployment is split into two parts:
+
+1. **Cloudflare Worker** — serves the built Vite frontend from `dist` and proxies `/api/*`
+   to the backend.
+2. **Bun backend** — runs the existing Hono/SQLite server on a host with a persistent disk
+   (Render, Railway, Fly.io, Docker, etc.).
+
+### Cloudflare Workers (frontend + API proxy)
+
+The repository includes `wrangler.jsonc` and `server/worker.ts` specifically for this.
+
+Cloudflare settings:
+
+| Setting | Value |
+| --- | --- |
+| Worker name | `hackathonprojectaft` |
+| Build command | `bun run build` |
+| Deploy command | `npx wrangler deploy` |
+| Root directory | repository root |
+| Build output directory | `dist` (also configured in `wrangler.jsonc`) |
+
+The Worker:
+
+- serves `dist/` through the `ASSETS` binding,
+- sends `/api` and `/api/*` to `API_ORIGIN`,
+- returns a clear JSON 503 if `API_ORIGIN` is missing.
+
+Set the backend URL as a Cloudflare **Variable** (not a secret, unless you prefer):
+
+```text
+API_ORIGIN=https://your-routey-backend.example.com
+```
+
+Do not include a trailing slash. Example: `https://routey-api.onrender.com`.
+
+> A Worker-only deployment without `API_ORIGIN` will show the Routey interface but all
+> data/route requests will fail with `backend_not_configured`. This is expected.
+
+### Backend on Render/Railway/Fly.io
+
+Deploy the Bun backend first and copy its public HTTPS URL. `render.yaml` is ready for a
+Render Blueprint with a persistent disk; use the Dockerfile for Railway/Fly.io.
+
+Required backend environment:
+
+```text
+ROUTEY_DB=/data/routey.db
+NODE_ENV=production
+```
+
+Optional:
+
+```text
+LLM_API_KEY=
+LLM_BASE_URL=https://openrouter.ai/api/v1
+LLM_MODEL=deepseek/deepseek-chat
+```
+
+Mount a persistent volume at `/data`. Without one, SQLite data and Lab history are lost on
+redeploys/restarts.
+
+Then set `API_ORIGIN` in the Cloudflare Worker variables and redeploy the Worker.
+
+### Fully Cloudflare-native alternative
+
+If you do not want a separate backend host, the backend would need to be ported to
+Cloudflare D1 + Workers Functions (replace `bun:sqlite` with D1, make database calls
+asynchronous, and replace the background Lab runner). That is a code migration, not just a
+Cloudflare setting.
 
 ### Docker
 
@@ -272,6 +340,8 @@ Dockerfile and provide the same persistent volume/environment variables.
 
 ```text
 server/            Bun + Hono API, SQLite, simulation, scoring, Lab, LLM adapter
+server/worker.ts   Cloudflare Worker static frontend + /api proxy
+wrangler.jsonc     Cloudflare Worker, assets and SPA configuration
 shared/            Shared TypeScript types, labels, geodesy helpers
 src/               React frontend
   components/      Map, route cards, details, driving HUD, Lab, settings, modals
