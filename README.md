@@ -281,6 +281,12 @@ Do not include a trailing slash. Example: `https://routey-api.onrender.com`.
 Deploy the Bun backend first and copy its public HTTPS URL. `render.yaml` is ready for a
 Render Blueprint with a persistent disk; use the Dockerfile for Railway/Fly.io.
 
+**Render Blueprint:** [Deploy Routey to Render](https://render.com/deploy?repo=https://github.com/cdnoffer/HackathonProjectAft)
+
+> If you only need one working website quickly, you can use the Render URL directly — the
+> Docker service serves both the frontend and the API. The Cloudflare Worker is optional
+> if you want a Cloudflare-hosted frontend.
+
 Required backend environment:
 
 ```text
