@@ -81,7 +81,7 @@ export default function MapView({
       zoomControl: false,
       attributionControl: true,
       preferCanvas: true,
-      minZoom: 2,
+      minZoom: 19,
       worldCopyJump: true,
     });
     map.setView([24, 10], 2);
