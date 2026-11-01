@@ -42,7 +42,7 @@ explainable safety score and a reason under every situation.
 - **Simulation Lab.** A backend test harness runs 3–8 fresh scenarios, verifies that places,
   weather signatures, times and seeds are all unique, and stores every run in SQLite.
 
-![Routey dark interface](docs/routey-dark.jpg)
+![Routey dark interface](docs/routey-main-dark.png)
 - **Auto / light / dark theme.** Auto follows the operating-system preference; manual
   overrides are stored locally. 
 
