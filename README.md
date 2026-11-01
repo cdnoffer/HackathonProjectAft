@@ -15,9 +15,9 @@ explainable safety score and a reason under every alternative.
 
 ## What it does
 
-- **Live map, real roads.** A Leaflet map uses Esri Light/Dark Gray basemap tiles with a
-  label overlay, and Valhalla routing. Every scenario uses real road geometry, real turn
-  maneuvers and real distances.
+- **Live map, real roads.** A Leaflet map uses OpenFreeMap vector tiles through MapLibre
+  GL, with `bright` and `dark` styles, and Valhalla routing. Every scenario uses real road
+  geometry, real turn maneuvers and real distances.
 - **Random world simulator.** The backend picks a real city from a curated global
   catalogue, samples two points within its road network, fetches live routes, and generates
   a seed-specific time, weather, daylight phase, traffic profile, and road-condition story.
@@ -40,8 +40,7 @@ explainable safety score and a reason under every alternative.
 - **Simulation Lab.** A backend test harness runs 3–8 fresh scenarios, verifies that places,
   weather signatures, times and seeds are all unique, and stores every run in SQLite.
 - **Auto / light / dark theme.** Auto follows the operating-system preference; manual
-  overrides are stored locally. The dark map uses Esri's Dark Gray basemap and reference
-  label overlay.
+  overrides are stored locally. The dark map uses OpenFreeMap's `dark` style.
 
 ![Routey dark interface](docs/routey-dark.jpg)
 
@@ -49,10 +48,10 @@ explainable safety score and a reason under every alternative.
 
 | Layer | Technology |
 | --- | --- |
-| Frontend | React 19, Vite 8, TypeScript, Leaflet, lucide-react |
+| Frontend | React 19, Vite 8, TypeScript, Leaflet, MapLibre GL, lucide-react |
 | Backend | Bun 1.3, Hono, Zod |
 | Database | SQLite via `bun:sqlite` (WAL mode) |
-| Map tiles | Esri Light/Dark Gray basemap + reference labels |
+| Map tiles | OpenFreeMap vector tiles (MapLibre GL), `bright` / `dark` styles |
 | Routing | Valhalla public OSM router (`valhalla1.openstreetmap.de`) |
 | Geocoding | Nominatim (`nominatim.openstreetmap.org`) |
 | Optional AI narrative | Any OpenAI-compatible chat-completions endpoint, e.g. OpenRouter |
@@ -190,7 +189,7 @@ SQLite tables created automatically:
 | `lab_run_scenarios` | Links Lab runs to generated scenarios |
 
 Route geometry and maneuvers are real map data; generated conditions and scores are stored
-alongside them for auditability. Map raster tiles are not stored in SQLite.
+alongside them for auditability. Map tiles are not stored in SQLite.
 
 ## API
 
@@ -335,9 +334,10 @@ Dockerfile and provide the same persistent volume/environment variables.
 - Public Valhalla and Nominatim have usage policies and rate limits. Routey serializes and
   caches these requests, but a production deployment should use a self-hosted router or a
   commercial provider with a proper plan.
-- Basemap tiles are provided by Esri's public ArcGIS services. Review Esri's terms and use
-  an appropriate Esri plan/key for substantial or commercial traffic. Routing and
-  geocoding still depend on public OSM Valhalla/Nominatim services.
+- Basemap tiles are provided by OpenFreeMap's public instance: free, no API key, no request
+  limits, and commercial use is allowed. Attribution is required. OpenFreeMap is open
+  source, so it can be self-hosted if you need an SLA. Routing and geocoding still depend
+  on public OSM Valhalla/Nominatim services.
 - LLM explanations are optional; provide a server-side key through environment variables.
 - The app has no authentication because it is a local/demo project. Add auth/rate limiting
   before exposing a write-heavy public deployment.
@@ -369,5 +369,6 @@ data/              SQLite database (gitignored)
 
 ## Credits
 
-Basemap tiles © Esri. Map/routing data © OpenStreetMap contributors. Routing by Valhalla.
-Place search by Nominatim. Built with Bun, Hono, React, Vite and Leaflet.
+Basemap tiles © OpenFreeMap and OpenMapTiles, map data © OpenStreetMap contributors.
+Routing by Valhalla. Place search by Nominatim. Built with Bun, Hono, React, Vite, Leaflet
+and MapLibre GL.

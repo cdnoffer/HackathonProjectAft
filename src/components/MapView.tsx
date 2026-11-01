@@ -1,5 +1,9 @@
 import { useEffect, useRef } from "react";
 import L from "leaflet";
+import { maplibreGL } from "@maplibre/maplibre-gl-leaflet";
+import { setWorkerUrl } from "maplibre-gl";
+import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
+import "maplibre-gl/dist/maplibre-gl.css";
 import type { RouteData, Scenario } from "../../shared/types";
 import {
   formatDistance,
@@ -27,21 +31,15 @@ interface MapViewProps {
   driving: boolean;
 }
 
-const TILE_LAYERS = {
-  light: {
-    base: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
-    reference:
-      "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}",
-  },
-  dark: {
-    base: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",
-    reference:
-      "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}",
-  },
+const MAX_ZOOM = 20;
+
+const MAP_STYLES = {
+  light: "https://tiles.openfreemap.org/styles/bright",
+  dark: "https://tiles.openfreemap.org/styles/dark",
 } as const;
 
-const ATTRIBUTION =
-  'Tiles &copy; <a href="https://www.esri.com/" target="_blank" rel="noreferrer">Esri</a> — Esri, HERE, Garmin, &copy; OpenStreetMap contributors · Routing by Valhalla';
+// MapLibre runs its tile parser in a Web Worker; Vite needs the URL handed to it.
+setWorkerUrl(workerUrl);
 
 function escapeHtml(value: string): string {
   return value
@@ -65,8 +63,7 @@ export default function MapView({
 }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
-  const tileRef = useRef<L.TileLayer | null>(null);
-  const referenceRef = useRef<L.TileLayer | null>(null);
+  const glLayerRef = useRef<ReturnType<typeof maplibreGL> | null>(null);
   const routeLayerRef = useRef<L.LayerGroup | null>(null);
   const markerLayerRef = useRef<L.LayerGroup | null>(null);
   const carMarkerRef = useRef<L.Marker | null>(null);
@@ -82,6 +79,7 @@ export default function MapView({
       attributionControl: true,
       preferCanvas: true,
       minZoom: 2,
+      maxZoom: MAX_ZOOM,
       worldCopyJump: true,
     });
     map.setView([24, 10], 2);
@@ -98,29 +96,24 @@ export default function MapView({
       window.clearTimeout(timer);
       map.remove();
       mapRef.current = null;
+      glLayerRef.current = null;
     };
   }, []);
 
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
-    if (tileRef.current) map.removeLayer(tileRef.current);
-    if (referenceRef.current) map.removeLayer(referenceRef.current);
+    if (glLayerRef.current) {
+      map.removeLayer(glLayerRef.current);
+      glLayerRef.current = null;
+    }
 
-    const layers = TILE_LAYERS[theme];
-    tileRef.current = L.tileLayer(layers.base, {
-      attribution: ATTRIBUTION,
-      maxZoom: 20,
-      zIndex: 0,
-      detectRetina: false,
-    }).addTo(map);
-    tileRef.current.bringToBack();
-
-    referenceRef.current = L.tileLayer(layers.reference, {
-      maxZoom: 20,
-      zIndex: 1,
-      detectRetina: false,
-    }).addTo(map);
+    const layer = maplibreGL({
+      style: MAP_STYLES[theme],
+      maxZoom: MAX_ZOOM,
+    });
+    layer.addTo(map);
+    glLayerRef.current = layer;
   }, [theme]);
 
   useEffect(() => {

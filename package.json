@@ -16,9 +16,11 @@
     "test:e2e": "uv run --with playwright python tests/e2e.py"
   },
   "dependencies": {
+    "@maplibre/maplibre-gl-leaflet": "^0.1.4",
     "hono": "^4.13.14",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.66.0",
+    "maplibre-gl": "^6.16.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "zod": "^4.6.7"

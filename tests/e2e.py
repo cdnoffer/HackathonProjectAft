@@ -124,9 +124,17 @@ def main() -> int:
                 page.locator(".route-card").first.locator(".recommended-ribbon").count()
                 == 1
             ), "recommended route is not sorted first"
-            assert page.locator(".leaflet-tile-loaded").count() > 0, "no map tiles"
+            canvas = page.locator(".maplibregl-canvas")
+            assert canvas.count() > 0, "no MapLibre canvas"
+            canvas_box = canvas.first.bounding_box()
+            assert canvas_box and canvas_box["width"] > 0 and canvas_box["height"] > 0, (
+                "MapLibre canvas has no size"
+            )
             assert "Access blocked" not in page.locator("body").inner_text(), (
                 "map provider returned an access-blocked tile page"
+            )
+            assert "OpenFreeMap" in page.locator(".leaflet-control-attribution").inner_text(), (
+                "OpenFreeMap attribution missing"
             )
             assert page.locator(".map-canvas").is_visible(), "map is not visible"
             first_city = page.locator(".scenario-place h2").inner_text()
