@@ -37,6 +37,8 @@ export interface GenerateCustomOptions {
   simulatedAt?: string;
 }
 
+const MAX_CUSTOM_ROUTE_M = 300_000;
+
 const COMPASS = [
   "Central",
   "North",
@@ -127,6 +129,7 @@ function customCity(origin: Place, destination: Place): City {
     (origin.lat + destination.lat) / 2,
     (origin.lon + destination.lon) / 2,
   );
+  // Label threshold only; the route-length limit is MAX_CUSTOM_ROUTE_M.
   const close = nearest.distanceM < 120_000;
   const minLat = Math.min(origin.lat, destination.lat);
   const maxLat = Math.max(origin.lat, destination.lat);
@@ -319,8 +322,10 @@ export async function generateCustomScenario(
   if (directDistance < 120) {
     throw new Error("Choose two points at least 120 metres apart");
   }
-  if (directDistance > 120_000) {
-    throw new Error("Custom routes are limited to 120 km; use the random simulator for longer trips");
+  if (directDistance > MAX_CUSTOM_ROUTE_M) {
+    throw new Error(
+      `Custom routes are limited to ${MAX_CUSTOM_ROUTE_M / 1000} km; use the random simulator for longer trips`,
+    );
   }
 
   const city = customCity(origin, destination);
