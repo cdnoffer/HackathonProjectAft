@@ -16,7 +16,7 @@ explainable safety score and a reason under every situation.
 
 ## What it does
 
-![Routey main interface](docs/routey-main.png)s
+![Routey main interface](docs/routey-main.png)
 - **Live map, real roads.** A real-life map sourced from OpenStreetMap. Every scenario uses real road geometry, real turn
   maneuvers and real distances.
 - **Random world simulator.** The backend picks a real city from a curated global
@@ -26,14 +26,14 @@ explainable safety score and a reason under every situation.
   groups, compounds dangerous combinations (ice + steep bend, fog + unlit road, etc.), and
   applies a worst-segment penalty.
 
-![Routey recommend route](docs/routey-routes.png)s
+![Routey recommend route](docs/routey-routes.png)
 - **Route recommendations.** Compare two or three live routes. Each card shows its safety
   score, safety label, ETA, distance, average speed, recommendation/trade-off reason, and
   its top simulated hazard.
 - **Adjustable decision weighting.** Slide between *Fastest* and *Safest*. The backend
   re-ranks the routes and rewrites the recommendation reasons at the chosen weighting.
 
-![Routey risk interface](docs/routey-risk-analysis.png)s
+![Routey risk interface](docs/routey-risk-analysis.png)
 - **AI reasoning.** The local explainable engine decides every score and generates reasons
   under every path. An optional OpenAI-compatible LLM can rewrite/enrich explanations; it
   is explicitly instructed never to change scores or invent conditions.
